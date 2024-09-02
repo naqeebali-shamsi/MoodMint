@@ -16,9 +16,11 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18.x'
-    - run: npm ci
+    - name: Install pnpm
+      run: npm install -g pnpm
+    - run: pnpm install
     - name: Run Tests
-      run: npx hardhat test
+      run: pnpm exec hardhat test --network hardhat
       env:
         PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
@@ -34,11 +36,13 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18.x'
-    - run: npm ci
+    - name: Install pnpm
+      run: npm install -g pnpm
+    - run: pnpm install
     - name: Deploy Smart Contract
-      run: npx hardhat run scripts/deploy.js --network goerli
+      run: pnpm exec hardhat run scripts/deploy.js --network sepolia
       env:
-        PRIVATE_KEY: ${{ secrets.ETHEREUM_PRIVATE_KEY }}
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     - name: Update Contract Address
       run: |
