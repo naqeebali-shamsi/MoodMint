@@ -1,4 +1,5 @@
-require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-ethers");
+require("@nomicfoundation/hardhat-chai-matchers");
 require("dotenv").config();
 
 const INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID;
@@ -9,7 +10,7 @@ if (!INFURA_PROJECT_ID || !PRIVATE_KEY) {
 }
 
 module.exports = {
-  defaultNetwork: "sepolia",
+  defaultNetwork: "hardhat",
   networks: {
     hardhat: {},
     sepolia: {

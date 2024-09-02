@@ -1,9 +1,10 @@
 const {
   time,
   loadFixture,
-} = require("@nomicfoundation/hardhat-toolbox/network-helpers");
+} = require("@nomicfoundation/hardhat-network-helpers");
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
+const { ethers } = require("hardhat");
 
 describe("Lock", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -39,14 +40,11 @@ describe("Lock", function () {
     });
 
     it("Should receive and store the funds to lock", async function () {
-      const { lock, lockedAmount } = await loadFixture(
-        deployOneYearLockFixture
-      );
+      const { lock, lockedAmount } = await loadFixture(deployOneYearLockFixture);
 
-      expect(await ethers.provider.getBalance(lock.target)).to.equal(
-        lockedAmount
-      );
+      expect(await ethers.provider.getBalance(lock.address)).to.equal(lockedAmount);
     });
+
 
     it("Should fail if the unlockTime is not in the future", async function () {
       // We don't use the fixture here because we want a different deployment
