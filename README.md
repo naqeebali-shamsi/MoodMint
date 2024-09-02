@@ -11,7 +11,7 @@
 
 **MoodMint: Your Emotions, Minted on the Blockchain**
 
-[Demo](https://your-demo-link.com) • [Report Bug](https://github.com/naqeebali-shamsi/moodmint/issues) • [Request Feature](https://github.com/naqeebali-shamsi/moodmint/issues)
+[Demo](https://mood-mint.vercel.app/) • [Report Bug](https://github.com/naqeebali-shamsi/moodmint/issues) • [Request Feature](https://github.com/naqeebali-shamsi/moodmint/issues)
 
 </div>
 
