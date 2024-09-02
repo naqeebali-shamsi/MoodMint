@@ -10,6 +10,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     environment: Production
+    env:
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js
@@ -23,15 +26,16 @@ jobs:
       run: pnpm exec hardhat compile
     - name: Run Tests
       run: pnpm exec hardhat test --network hardhat
-      env:
-        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-        INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      
 
   deploy:
     needs: test
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: Production
+    env:
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js
@@ -48,6 +52,8 @@ jobs:
       env:
         PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+        PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
+        PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
     - name: Update Contract Address
       run: |
         CONTRACT_ADDRESS=$(cat src/artifacts/contracts/MoodNFT.sol/contractAddress.txt)
