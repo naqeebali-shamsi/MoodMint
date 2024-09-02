@@ -19,6 +19,8 @@ jobs:
     - name: Install pnpm
       run: npm install -g pnpm
     - run: pnpm install
+    - name: Compile Contracts
+      run: pnpm exec hardhat compile
     - name: Run Tests
       run: pnpm exec hardhat test --network hardhat
       env:
@@ -39,6 +41,8 @@ jobs:
     - name: Install pnpm
       run: npm install -g pnpm
     - run: pnpm install
+    - name: Compile Contracts
+      run: pnpm exec hardhat compile
     - name: Deploy Smart Contract
       run: pnpm exec hardhat run scripts/deploy.js --network sepolia
       env:
@@ -46,7 +50,7 @@ jobs:
         INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     - name: Update Contract Address
       run: |
-        CONTRACT_ADDRESS=$(cat contractAddress.txt)
+        CONTRACT_ADDRESS=$(cat src/artifacts/contracts/MoodNFT.sol/contractAddress.txt)
         echo "NEXT_PUBLIC_CONTRACT_ADDRESS=$CONTRACT_ADDRESS" >> $GITHUB_ENV
     - name: Deploy to Vercel
       uses: amondnet/vercel-action@v20
