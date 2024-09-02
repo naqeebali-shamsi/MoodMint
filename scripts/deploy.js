@@ -1,4 +1,5 @@
 const hre = require("hardhat");
+const fs = require("fs");
 
 async function main() {
     try {
@@ -34,7 +35,9 @@ async function main() {
 
         await moodNFT.deployed();
 
-        console.log("MoodNFT deployed to:", moodNFT.address);
+        // Write the contract address to a file
+        fs.writeFileSync('contractAddress.txt', moodNFT.address);
+
     } catch (error) {
         console.error("Error in deployment:");
         console.error(error);
