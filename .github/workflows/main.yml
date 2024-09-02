@@ -19,7 +19,7 @@ jobs:
     - name: Run Tests
       run: npx hardhat test
       env:
-        PRIVATE_KEY: ${{ secrets.ETHEREUM_PRIVATE_KEY }}
+        PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   deploy:
