@@ -35,8 +35,14 @@ async function main() {
 
         await moodNFT.deployed();
 
-        // Write the contract address to a file
-        fs.writeFileSync('contractAddress.txt', moodNFT.address);
+        // Write the contract address to a file inside the artifacts directory
+        const artifactsDir = './src/artifacts/contracts/MoodNFT.sol';
+        if (!fs.existsSync(artifactsDir)) {
+            fs.mkdirSync(artifactsDir, { recursive: true });
+        }
+        fs.writeFileSync(`${artifactsDir}/contractAddress.txt`, moodNFT.address);
+
+        console.log(`Contract deployed at address: ${moodNFT.address}`);
 
     } catch (error) {
         console.error("Error in deployment:");

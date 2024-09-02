@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
-import MoodNFT from '../../artifacts/contracts/MoodNFT.sol/MoodNFT.json';
+import MoodNFT from '@/artifacts/contracts/MoodNFT.sol/MoodNFT.json';
 
 export default function Home() {
   const [moodNFT, setMoodNFT] = useState<ethers.Contract | null>(null);
@@ -35,7 +35,6 @@ export default function Home() {
     if (moodNFT && mood) {
       setIsLoading(true);
       try {
-        // Call the server-side API to upload the mood data to IPFS
         const response = await fetch('/api/uploadToIPFS', {
           method: 'POST',
           headers: {
@@ -50,7 +49,6 @@ export default function Home() {
 
         const { ipfsUrl } = await response.json();
 
-        // Mint the NFT using the IPFS URL returned from the server
         const transaction = await moodNFT.mintMood(account, ipfsUrl, mood);
         await transaction.wait();
         alert('Mood NFT minted!');
