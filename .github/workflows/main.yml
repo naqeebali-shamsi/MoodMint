@@ -2,9 +2,9 @@ name: CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
@@ -16,8 +16,11 @@ jobs:
       with:
         node-version: '18.x'
     - run: npm ci
-    - run: npm run test
-    - run: npx hardhat test
+    - name: Run Tests
+      run: npx hardhat test
+      env:
+        PRIVATE_KEY: ${{ secrets.ETHEREUM_PRIVATE_KEY }}
+        INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   deploy:
     needs: test
