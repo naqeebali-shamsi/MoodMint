@@ -54,6 +54,7 @@ jobs:
         INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
         PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
         PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
+        PINATA_JWT: ${{ secrets.PINATA_JWT }}
     - name: Update Contract Address
       run: |
         CONTRACT_ADDRESS=$(cat src/artifacts/contracts/MoodNFT.sol/contractAddress.txt)

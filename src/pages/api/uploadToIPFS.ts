@@ -1,29 +1,31 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import PinataClient from '@pinata/sdk';
+import { PinataSDK } from 'pinata';
 
-const pinata = PinataClient(process.env.PINATA_API_KEY!, process.env.PINATA_API_SECRET!);
+const pinata = new PinataSDK({
+  pinataJwt: process.env.PINATA_JWT!,
+  pinataGateway: "indigo-large-narwhal-58.mypinata.cloud",
+});
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    const { mood } = req.body;
+export default async function uploadToIPFS(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    if (req.method === 'POST') {
+      const { mood } = req.body;
 
-    if (!mood) {
-      res.status(400).json({ error: 'Mood is required' });
-      return;
-    }
+      // Convert mood text to a File object
+      const file = new File([`Mood: ${mood}`], "MoodData.txt", { type: "text/plain" });
 
-    try {
-      // Pin data to IPFS
-      const result = await pinata.pinJSONToIPFS({ mood });
-      const ipfsUrl = `ipfs://${result.IpfsHash}`;
+      // Use the Pinata SDK to upload the file
+      const uploadResponse = await pinata.upload.file(file);
+
+      const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${uploadResponse.IpfsHash}`;
 
       res.status(200).json({ ipfsUrl });
-    } catch (error) {
-      console.error('Error uploading to IPFS:', error);
-      res.status(500).json({ error: 'Failed to upload to IPFS' });
+    } else {
+      res.setHeader('Allow', ['POST']);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
     }
-  } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+  } catch (error) {
+    console.error('Error uploading to IPFS:', error);
+    res.status(500).json({ error: 'Error uploading to IPFS' });
   }
 }

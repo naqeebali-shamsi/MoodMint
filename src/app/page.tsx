@@ -14,12 +14,16 @@ export default function Home() {
     const init = async () => {
       if (typeof window !== 'undefined' && window.ethereum) {
         try {
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          setAccount(accounts[0]);
-          const provider = new ethers.providers.Web3Provider(window.ethereum);
-          const signer = provider.getSigner();
-          const contract = new ethers.Contract(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS!, MoodNFT.abi, signer);
-          setMoodNFT(contract);
+          if (window.ethereum.request) {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            setAccount(accounts[0]);
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            const contract = new ethers.Contract(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS!, MoodNFT.abi, signer);
+            setMoodNFT(contract);
+          } else {
+            console.error("window.ethereum.request is not defined.");
+          }
         } catch (error) {
           console.error("An error occurred during initialization:", error);
         }
