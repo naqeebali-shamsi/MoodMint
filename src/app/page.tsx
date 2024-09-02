@@ -12,7 +12,7 @@ export default function Home() {
 
   useEffect(() => {
     const init = async () => {
-      if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
+      if (typeof window !== 'undefined' && window.ethereum) {
         try {
           const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
           setAccount(accounts[0]);
@@ -35,7 +35,23 @@ export default function Home() {
     if (moodNFT && mood) {
       setIsLoading(true);
       try {
-        const transaction = await moodNFT.mintMood(account, `ipfs://your-ipfs-hash/${mood}.json`, mood);
+        // Call the server-side API to upload the mood data to IPFS
+        const response = await fetch('/api/uploadToIPFS', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ mood }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload to IPFS');
+        }
+
+        const { ipfsUrl } = await response.json();
+
+        // Mint the NFT using the IPFS URL returned from the server
+        const transaction = await moodNFT.mintMood(account, ipfsUrl, mood);
         await transaction.wait();
         alert('Mood NFT minted!');
         setMood('');
