@@ -1,11 +1,6 @@
 import getErrorMessage from '@/utils/getErrorMessage';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PinataSDK } from 'pinata';
-
-const pinata = new PinataSDK({
-  pinataJwt: process.env.PINATA_JWT!,
-  pinataGateway: "example-gateway.mypinata.cloud",
-});
+import { pinata } from '@/utils/pinataConfig';
 
 export default async function uploadToIPFS(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -24,20 +19,47 @@ export default async function uploadToIPFS(req: NextApiRequest, res: NextApiResp
       return res.status(400).json({ error: 'Image URL is required' });
     }
 
-    // Upload to IPFS directly from URL
-    const uploadResponse = await pinata.upload.url(imageUrl, {
-      pinataMetadata: {
-        name: 'url-uploaded-image',
-      },
-      pinataContent: {
-        mood: mood
-      }
-    });
+    // Upload image to IPFS
+    const imageUploadResult = await pinata.upload.url(imageUrl);
+    const imageIpfsUrl = `ipfs://${imageUploadResult.IpfsHash}`;
 
-    const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${uploadResponse.IpfsHash}`;
-    res.status(200).json({ ipfsUrl });
+    // Create metadata JSON
+    const metadata = {
+      name: `Mood NFT: ${mood}`,
+      description: `An NFT representing the mood: ${mood}`,
+      image: imageIpfsUrl,
+      attributes: [
+        {
+          trait_type: "Mood",
+          value: mood
+        }
+      ]
+    };
+
+    // Upload metadata to IPFS
+    const metadataUploadResult = await pinata.upload.json(metadata);
+    const metadataIpfsUrl = `ipfs://${metadataUploadResult.IpfsHash}`;
+
+    // Create gateway URLs for easier access
+    const gatewayImageUrl = `https://gateway.pinata.cloud/ipfs/${imageUploadResult.IpfsHash}`;
+    const gatewayMetadataUrl = `https://gateway.pinata.cloud/ipfs/${metadataUploadResult.IpfsHash}`;
+
+    res.status(200).json({ 
+      success: true,
+      data: {
+        imageIpfsUrl, 
+        metadataIpfsUrl,
+        gatewayImageUrl,
+        gatewayMetadataUrl
+      },
+      metadata // Include the full metadata for reference
+    });
   } catch (error) {
     console.error('Error uploading to IPFS:', error);
-    res.status(500).json({ error: 'Error uploading to IPFS', details: getErrorMessage(error) });
+    res.status(500).json({ 
+      success: false,
+      error: 'Error uploading to IPFS', 
+      details: getErrorMessage(error) 
+    });
   }
-} 
+}

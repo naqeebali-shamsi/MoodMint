@@ -138,48 +138,60 @@ export default function Home() {
         return;
       }
     }
-
+  
     if (moodNFT && account) {
       setIsLoading(true);
       console.log(`Starting NFT minting process for mood: "${mood}"`);
       try {
-        const response = await fetch('/api/mintNFT', {
+        // First, generate the image
+        const imageResponse = await fetch('/api/generateImage', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            mood, 
-            account,
-            contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS
-          }),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mood }),
         });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.details || 'Failed to prepare NFT minting');
+  
+        if (!imageResponse.ok) {
+          throw new Error('Failed to generate image');
         }
-
-        const { imageUrl, ipfsUrl } = await response.json();
-        console.log(`Image generated and IPFS URL received. IPFS URL: ${ipfsUrl}`);
-
+  
+        const { imageUrl } = await imageResponse.json();
+  
+        // Then, upload to IPFS
+        const ipfsResponse = await fetch('/api/uploadToIPFS', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mood, imageUrl }),
+        });
+  
+        if (!ipfsResponse.ok) {
+          throw new Error('Failed to upload to IPFS');
+        }
+  
+        const ipfsData = await ipfsResponse.json();
+  
+        if (!ipfsData.success) {
+          throw new Error(ipfsData.error || 'Failed to upload to IPFS');
+        }
+  
+        const { metadataIpfsUrl, gatewayImageUrl, gatewayMetadataUrl } = ipfsData.data;
+  
         console.log('Minting NFT on the blockchain...');
-        const transaction = await moodNFT.mintMood(account, ipfsUrl, mood);
+        const transaction = await moodNFT.mintMood(account, metadataIpfsUrl, mood);
         await transaction.wait();
         console.log(`NFT minted successfully. Transaction hash: ${transaction.hash}`);
-
+  
         const newNFT: MintedNFT = {
-          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Generate a unique id
+          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           mood,
-          imageUrl,
-          ipfsUrl,
+          imageUrl: gatewayImageUrl,
+          ipfsUrl: gatewayMetadataUrl,
           timestamp: new Date().toISOString()
         };
-
+  
         const updatedNFTs = [...mintedNFTs, newNFT];
         setMintedNFTs(updatedNFTs);
         saveNFTsToLocalStorage(updatedNFTs);
-
+  
         setMood('');
         console.log('NFT minting process completed successfully');
       } catch (error) {
