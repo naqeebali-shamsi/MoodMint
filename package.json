@@ -10,12 +10,14 @@
 		"test": "hardhat test --network hardhat"
 	},
 	"dependencies": {
+		"@ant-design/icons": "^5.4.0",
 		"@google/generative-ai": "^0.17.1",
 		"@headlessui/react": "^2.1.5",
 		"@heroicons/react": "^2.1.5",
 		"@nomiclabs/hardhat-waffle": "^2.0.6",
 		"@openzeppelin/contracts": "^5.0.2",
 		"@tippyjs/react": "^4.2.6",
+		"antd": "^5.20.5",
 		"axios": "^1.7.7",
 		"chai": "4.3.7",
 		"dotenv": "^16.4.5",
