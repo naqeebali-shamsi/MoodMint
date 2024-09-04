@@ -7,9 +7,9 @@ const MODELS_LAB_API_KEY = process.env.MODELS_LAB_API_KEY!;
 const MODELS_LAB_API_URL = 'https://modelslab.com/api/v6/realtime/text2img';
 
 // Construct the base URL
-const BASE_URL = process.env.NODE_ENV === 'production'
-  ? `https://${process.env.HOST}`
-  : `http://${process.env.HOST}:${process.env.PORT}`;
+const BASE_URL = process.env.VERCEL_URL 
+     ? `https://${process.env.VERCEL_URL}` 
+     : `http://localhost:${process.env.PORT || 3000}`;
 
 async function generatePrompt(theme: string): Promise<string> {
     try {

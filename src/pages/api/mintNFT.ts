@@ -3,9 +3,9 @@ import { logger, safeStringify } from '@/utils/logger';
 import getErrorMessage from '@/utils/getErrorMessage';
 import axios from 'axios';
 
-const BASE_URL = process.env.NODE_ENV === 'production'
-  ? `https://${process.env.HOST}`
-  : `http://${process.env.HOST}:${process.env.PORT}`;
+const BASE_URL = process.env.VERCEL_URL 
+     ? `https://${process.env.VERCEL_URL}` 
+     : `http://localhost:${process.env.PORT || 3000}`;
 
 export default async function mintNFT(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
