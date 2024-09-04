@@ -10,21 +10,31 @@
 		"test": "hardhat test --network hardhat"
 	},
 	"dependencies": {
+		"@google/generative-ai": "^0.17.1",
+		"@headlessui/react": "^2.1.5",
+		"@heroicons/react": "^2.1.5",
 		"@nomiclabs/hardhat-waffle": "^2.0.6",
 		"@openzeppelin/contracts": "^5.0.2",
+		"@tippyjs/react": "^4.2.6",
+		"axios": "^1.7.7",
 		"chai": "4.3.7",
 		"dotenv": "^16.4.5",
 		"ethereum-waffle": "^4.0.10",
+		"formidable": "^3.5.1",
+		"lottie-react": "^2.4.0",
 		"next": "^14.2.7",
 		"pinata": "^0.4.0",
 		"react": "^18.3.1",
-		"react-dom": "^18.3.1"
+		"react-dom": "^18.3.1",
+		"winston": "^3.14.2",
+		"zod": "^3.23.8"
 	},
 	"devDependencies": {
 		"@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
 		"@nomicfoundation/hardhat-network-helpers": "^1.0.11",
 		"@nomicfoundation/hardhat-toolbox": "^1.0.2",
 		"@nomiclabs/hardhat-ethers": "^2.2.3",
+		"@types/formidable": "^3.4.5",
 		"@types/node": "^22.5.2",
 		"@types/react": "^18.3.5",
 		"@types/react-dom": "^18.3.0",
