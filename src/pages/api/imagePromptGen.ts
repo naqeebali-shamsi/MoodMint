@@ -114,13 +114,13 @@ export default async function imagePromptGen(req: NextApiRequest, res: NextApiRe
         
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro", safetySettings: safetySettings });
         
-        const geminiPrompt = `Generate a concise, detailed prompt for an AI image generation model to create an NFT based on the theme "${theme}". The prompt should be descriptive, focusing on visual elements, style, and mood. Do not include explanations or separate sections. 
+        const geminiPrompt = `Generate a concise, detailed prompt for an AI image generation model to create an NFT based on the theme "${theme}". The prompt should be descriptive, focusing on visual elements, style, and mood. Emphasize the most important 3-5 keywords or short phrases by surrounding them with double parentheses ((like this)). These emphasized elements should capture the essence of the image.
 
-IMPORTANT: Your response should ONLY contain the image generation prompt itself, enclosed in [PROMPT] tags. The prompt should be a single paragraph, similar in style and format to these examples:
+Do not include explanations or separate sections. 
 
-1. A cat has just stolen a fish in a fishmonger's shop and runs away with it. He has a panicked look on his face because he is being chased by the fishmonger. The fish appears to be silver and of medium size. In the background, the fishmonger yells at the cat. The scene is the street of an open-air market, with stalls and people strolling.
+IMPORTANT: Your response should ONLY contain the image generation prompt itself, enclosed in [PROMPT] tags. The prompt should be a single paragraph, similar in style and format to this example:
 
-2. A striking and surreal vector design featuring a crying skull adorned with gold teeth, rainbows, clouds, glitter, and psychedelic colors. The skull's eyes are filled with tears, and its mouth is open in a howl, while the text "I'm fine" is written across its forehead. The overall design is dark and morbid with a touch of humor and a dash of unexpected color and glitter.
+[PROMPT]A ((surreal portrait)) of a figure with ((multiple intertwined heads)), each face expressing a different aspect of confusion. The heads overlap, with mismatched eyes looking in various directions, creating a sense of ((disorientation)). The color palette is muted and dreamlike, with textures reminiscent of old photographs and faded ink. High quality, detailed, intricate, digital art.[/PROMPT]
 
 Now, create a similar prompt for the theme "${theme}":
 

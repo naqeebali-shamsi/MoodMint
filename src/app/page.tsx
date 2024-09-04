@@ -6,7 +6,7 @@ import MoodNFT from '@/artifacts/contracts/MoodNFT.sol/MoodNFT.json';
 import Lottie from 'lottie-react';
 import { z } from 'zod';
 import { Button, Menu, Dropdown, message } from 'antd';
-import { DownOutlined, ExportOutlined, DislikeOutlined } from '@ant-design/icons';
+import { DownOutlined, ExportOutlined, DislikeOutlined, EyeOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import 'antd/dist/reset.css';
 
@@ -147,7 +147,7 @@ export default function Home() {
         const imageResponse = await fetch('/api/generateImage', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mood }),
+          body: JSON.stringify({ theme: mood }),
         });
   
         if (!imageResponse.ok) {
@@ -174,6 +174,7 @@ export default function Home() {
         }
   
         const { metadataIpfsUrl, gatewayImageUrl, gatewayMetadataUrl } = ipfsData.data;
+        console.log(ipfsData);
   
         console.log('Minting NFT on the blockchain...');
         const transaction = await moodNFT.mintMood(account, metadataIpfsUrl, mood);
@@ -216,6 +217,12 @@ export default function Home() {
       label: 'Did not like the image',
       onClick: handleDislike,
     },
+    {
+      key: 'showImage',
+      icon: <EyeOutlined />,
+      label: 'Show Image',
+      onClick: () => window.open(nft.imageUrl, '_blank'),
+    }
   ];
 
   return (
@@ -241,15 +248,23 @@ export default function Home() {
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <div>
-            <Button
-              type="primary"
-              onClick={mintNFT}
-              disabled={isLoading || !mood || !account}
-              loading={isLoading}
-              className="w-full"
-            >
-              {isLoading ? <Lottie animationData={Cat} style={{ width: 50, height: 50 }} /> : 'Mint NFT'}
-            </Button>
+          {isLoading ? (
+            <div className="w-full h-64 flex  justify-center items-baseline">
+              <Lottie
+                animationData={Cat}
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            </div>
+            ) : (
+              <Button
+                type="primary"
+                onClick={mintNFT}
+                disabled={!mood || !account}
+                className="w-full h-8 text-lg font-semibold"
+              >
+                Mint NFT
+              </Button>
+            )}
           </div>
           {mintedNFTs.length > 0 && (
             <div className="space-y-4">
@@ -274,7 +289,7 @@ export default function Home() {
                 </div>
               ))}
               <Button danger onClick={clearAllNFTs} className="w-full">
-                Clear All Saved NFTs
+                Forget locally saved NFTs
               </Button>
             </div>
           )}

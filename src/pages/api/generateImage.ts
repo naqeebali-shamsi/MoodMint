@@ -110,7 +110,6 @@ export default async function generateImage(req: NextApiRequest, res: NextApiRes
     };
 
     const response = await axios.request(config);
-    console.log('response', response.data);
 
     if (response.data.status === 'success') {
       logger.info(`Image generated successfully for theme "${theme}"`);
