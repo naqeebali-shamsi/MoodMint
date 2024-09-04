@@ -2,6 +2,10 @@ import getErrorMessage from '@/utils/getErrorMessage';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { pinata } from '@/utils/pinataConfig';
 
+export const config = {
+  maxDuration: 60,
+};
+
 export default async function uploadToIPFS(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);

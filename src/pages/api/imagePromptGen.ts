@@ -9,6 +9,10 @@ const MODELS_LAB_API_URL = 'https://modelslab.com/api/v6/llm/chat';
 const MODELS_LAB_QUEUED_RESPONSE_URL = "https://modelslab.com/api/v6/llm/get_queued_response";
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
 
+export const config = {
+  maxDuration: 60,
+};
+
 function extractAndRefinePrompt(response: string): string {
   // Extract content between [PROMPT] tags
   const match = response.match(/\[PROMPT\]([\s\S]*?)\[\/PROMPT\]/);
