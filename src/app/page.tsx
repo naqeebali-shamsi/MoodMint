@@ -31,6 +31,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [mintedNFTs, setMintedNFTs] = useState<MintedNFT[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [networkError, setNetworkError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -79,6 +80,48 @@ export default function Home() {
 
     return () => {
       isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkNetwork = async () => {
+      if (typeof window !== 'undefined' && window.ethereum) {
+        try {
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          const network = await provider.getNetwork();
+          
+          if (network.chainId !== 11155111) { // Sepolia chainId
+            setNetworkError("Please connect to the Sepolia test network");
+          } else {
+            setNetworkError(null);
+          }
+        } catch (error) {
+          console.error("Error checking network:", error);
+        }
+      }
+    };
+
+    const handleNetworkChange = (networkId: string) => {
+      if (networkId !== '0xaa36a7') { // Sepolia networkId in hex
+        setNetworkError("Please connect to the Sepolia test network");
+      } else {
+        setNetworkError(null);
+      }
+    };
+
+    checkNetwork();
+
+    if (window.ethereum && window.ethereum.on) {
+      window.ethereum.on('networkChanged', handleNetworkChange);
+    }
+
+    return () => {
+      isMounted = false;
+      if (window.ethereum) {
+        window.ethereum.removeListener('networkChanged', handleNetworkChange);
+      }
     };
   }, []);
 
