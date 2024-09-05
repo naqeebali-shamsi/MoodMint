@@ -6,14 +6,9 @@ import getErrorMessage from '@/utils/getErrorMessage';
 const MODELS_LAB_API_KEY = process.env.MODELS_LAB_API_KEY!;
 const MODELS_LAB_API_URL = 'https://modelslab.com/api/v6/realtime/text2img';
 
-// Construct the base URL
-const BASE_URL = process.env.VERCEL_URL 
-     ? `https://${process.env.VERCEL_URL}` 
-     : `http://localhost:${process.env.PORT || 3000}`;
-
 async function generatePrompt(theme: string): Promise<string> {
     try {
-        const response = await axios.post(`${BASE_URL}/api/imagePromptGen`, { theme });
+        const response = await axios.post(`/api/imagePromptGen`, { theme });
         if (response.data && response.data.prompt) {
             return response.data.prompt;
         } else {
@@ -27,7 +22,7 @@ async function generatePrompt(theme: string): Promise<string> {
 
 async function getRandomEnhancementTag(): Promise<string> {
   try {
-    const response = await axios.get(`${BASE_URL}/api/randomImageEnhanceTag`);
+    const response = await axios.get(`/api/randomImageEnhanceTag`);
     return response.data.tag;
   } catch (error) {
     logger.error('Error getting random enhancement tag:', error);
@@ -37,7 +32,7 @@ async function getRandomEnhancementTag(): Promise<string> {
 
 async function uploadToIPFS(mood: string, imageUrl: string): Promise<string> {
   try {
-    const response = await axios.post(`${BASE_URL}/api/uploadToIPFS`, { mood, imageUrl });
+    const response = await axios.post(`/api/uploadToIPFS`, { mood, imageUrl });
     return response.data.ipfsUrl;
   } catch (error) {
     logger.error('Error uploading to IPFS:', safeStringify(error));
@@ -56,7 +51,7 @@ function enhancePrompt(prompt: string): string {
   return `${emphasizedPrompt}, ${styleKeywords}`;
 }
 
-const NEGATIVE_PROMPT = '((((ugly)))), (((duplicate))), ((morbid)), ((mutilated)), [out of frame], extra fingers, mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), ((ugly)), blurry, ((bad anatomy)), (((bad proportions))), ((extra limbs)), cloned face, (((disfigured))), out of frame, ugly, extra limbs, (bad anatomy), gross proportions, (malformed limbs), ((missing arms)), ((missing legs)), (((extra arms))), (((extra legs))), mutated hands, (fused fingers), (too many fingers), (((long neck)))';
+const NEGATIVE_PROMPT = 'out of frame, lowres, text, error, cropped, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, username, watermark, signature, extra body parts';
 
 export const config = {
   maxDuration: 60,

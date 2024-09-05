@@ -149,6 +149,13 @@ Now, create a similar prompt for the theme "${theme}":
     }
   } catch (error) {
     logger.error(`Error generating image prompt: ${getErrorMessage(error)}`);
+    if (axios.isAxiosError(error) && error.response) {
+      logger.error(`API Response: ${JSON.stringify({
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers
+      })}`);
+    }
     res.status(500).json({ 
       error: 'Error generating image prompt', 
       details: getErrorMessage(error),
