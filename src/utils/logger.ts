@@ -1,6 +1,6 @@
 import { createLogger, format, transports } from 'winston';
 
-function safeStringify(obj: any, indent = 2): string {
+export function safeStringify(obj: any, indent = 2): string {
     let cache: any[] = [];
     const retVal = JSON.stringify(
       obj,
@@ -16,7 +16,7 @@ function safeStringify(obj: any, indent = 2): string {
     return retVal;
 }
 
-const logger = createLogger({
+export const logger = createLogger({
   level: 'info',
   format: format.combine(
     format.timestamp(),
@@ -34,5 +34,3 @@ const logger = createLogger({
     new transports.File({ filename: 'combined.log' })
   ]
 });
-
-export { logger, safeStringify };

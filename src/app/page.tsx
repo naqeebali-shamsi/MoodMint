@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import MoodNFT from '@/artifacts/contracts/MoodNFT.sol/MoodNFT.json';
 import Lottie from 'lottie-react';
 import { z } from 'zod';
-import { Button, Menu, Dropdown, message } from 'antd';
+import { Button, Dropdown } from 'antd';
 import { DownOutlined, ExportOutlined, DislikeOutlined, EyeOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import 'antd/dist/reset.css';
@@ -21,6 +21,7 @@ interface MintedNFT {
   imageUrl: string;
   ipfsUrl: string;
   timestamp: string;
+  transactionHash: string;
 }
 
 export default function Home() {
@@ -139,54 +140,56 @@ export default function Home() {
       }
     }
   
-    if (moodNFT && account) {
+    if (account && moodNFT) {
       setIsLoading(true);
       console.log(`Starting NFT minting process for mood: "${mood}"`);
       try {
-        // First, generate the image
-        const imageResponse = await fetch('/api/generateImage', {
+        // Generate the image
+        const generateResponse = await fetch('/api/moodForge', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ theme: mood }),
+          body: JSON.stringify({ operation: 'generateImage', theme: mood }),
         });
   
-        if (!imageResponse.ok) {
+        if (!generateResponse.ok) {
           throw new Error('Failed to generate image');
         }
   
-        const { imageUrl } = await imageResponse.json();
+        const { imageUrl, prompt, negativePrompt, enhancementTag } = await generateResponse.json();
   
-        // Then, upload to IPFS
-        const ipfsResponse = await fetch('/api/uploadToIPFS', {
+        // Upload to IPFS
+        const uploadResponse = await fetch('/api/moodForge', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mood, imageUrl }),
+          body: JSON.stringify({ operation: 'uploadToIPFS', mood, imageUrl }),
         });
   
-        if (!ipfsResponse.ok) {
+        if (!uploadResponse.ok) {
           throw new Error('Failed to upload to IPFS');
         }
   
-        const ipfsData = await ipfsResponse.json();
+        const ipfsData = await uploadResponse.json();
   
         if (!ipfsData.success) {
           throw new Error(ipfsData.error || 'Failed to upload to IPFS');
         }
   
         const { metadataIpfsUrl, gatewayImageUrl, gatewayMetadataUrl } = ipfsData.data;
-        console.log(ipfsData);
   
+        // Mint the NFT using MetaMask
         console.log('Minting NFT on the blockchain...');
         const transaction = await moodNFT.mintMood(account, metadataIpfsUrl, mood);
-        await transaction.wait();
-        console.log(`NFT minted successfully. Transaction hash: ${transaction.hash}`);
+        const receipt = await transaction.wait();
+  
+        console.log(`NFT minted successfully. Transaction hash: ${receipt.transactionHash}`);
   
         const newNFT: MintedNFT = {
           id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           mood,
           imageUrl: gatewayImageUrl,
           ipfsUrl: gatewayMetadataUrl,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          transactionHash: receipt.transactionHash
         };
   
         const updatedNFTs = [...mintedNFTs, newNFT];
