@@ -9,27 +9,29 @@
 [![GitHub issues](https://img.shields.io/github/issues/naqeebali-shamsi/moodmint)](https://github.com/naqeebali-shamsi/moodmint/issues)
 [![GitHub forks](https://img.shields.io/github/forks/naqeebali-shamsi/moodmint)](https://github.com/naqeebali-shamsi/moodmint/network)
 
-**MoodMint: Your Emotions, Minted on the Blockchain**
+**MoodMint: Where Emotions Meet the Blockchain**
 
-[Demo](https://mood-mint.vercel.app/) • [Report Bug](https://github.com/naqeebali-shamsi/moodmint/issues) • [Request Feature](https://github.com/naqeebali-shamsi/moodmint/issues)
+[Live Demo](https://mood-mint.vercel.app/) • [Report Bug](https://github.com/naqeebali-shamsi/moodmint/issues) • [Request Feature](https://github.com/naqeebali-shamsi/moodmint/issues)
 
 </div>
 
 ## 🌟 About The Project
 
-MoodMint is a Web3 application that allows users to mint their daily moods as unique NFTs on the Ethereum blockchain. Express yourself, track your emotional journey, and own a piece of your personal history!
+MoodMint is a weekend project turned Web3 application that transforms your fleeting emotions into lasting NFTs on the Ethereum blockchain. It's not just about owning your feelings – it's about seeing them turned into unique, AI-generated art.
 
 ### 🛠️ Built With
 
 * [Next.js](https://nextjs.org/)
-* [Ethereum](https://ethereum.org/)
+* [Ethereum](https://ethereum.org/) (Sepolia Testnet)
 * [Solidity](https://docs.soliditylang.org/)
 * [Hardhat](https://hardhat.org/)
 * [ethers.js](https://docs.ethers.io/v5/)
+* [IPFS](https://ipfs.io/) via [Pinata](https://www.pinata.cloud/)
+* [AI Image Generation](https://modelslab.com/)
 
 ## 🚀 Getting Started
 
-To get a local copy up and running, follow these simple steps.
+To get your own MoodMint up and running, follow these simple steps.
 
 ### Prerequisites
 
@@ -37,6 +39,7 @@ To get a local copy up and running, follow these simple steps.
   ```sh
   npm install npm@latest -g
   ```
+* MetaMask wallet with some Sepolia ETH
 
 ### Installation
 
@@ -50,9 +53,9 @@ To get a local copy up and running, follow these simple steps.
    ```
 3. Configure your `.env` file
    ```sh
-   CP .env.example .env
+   cp .env.example .env
    ```
-   Then fill in your details in the `.env` file.
+   Fill in your details in the `.env` file, including API keys for Infura, Pinata, and Models Lab.
 
 ## 💻 Usage
 
@@ -60,15 +63,18 @@ To get a local copy up and running, follow these simple steps.
    ```sh
    npm run dev
    ```
-2. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Open [http://localhost:3000](http://localhost:3000) with your browser.
+3. Connect your MetaMask wallet (make sure you're on Sepolia network).
+4. Enter your mood, mint your NFT, and watch as AI turns it into art!
 
 ## 🗺️ Roadmap
 
 - [x] Basic NFT minting functionality
-- [x] Mood selection interface
+- [x] AI-generated art based on mood input
+- [x] IPFS storage for NFT metadata
 - [ ] Mood history visualization
 - [ ] Social sharing features
-- [ ] Mobile app version
+- [ ] Support for mainnet deployment
 
 See the [open issues](https://github.com/naqeebali-shamsi/moodmint/issues) for a full list of proposed features and known issues.
 
@@ -90,10 +96,12 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 * [Ethereum Foundation](https://ethereum.org/)
 * [OpenZeppelin](https://openzeppelin.com/)
-* [Netlify](https://www.netlify.com/)
+* [Vercel](https://vercel.com/)
+* [Pinata](https://www.pinata.cloud/)
+* [Models Lab](https://modelslab.com/)
 
 ---
 
 <div align="center">
-Made with ❤️ and ☕
+Made with ❤️, ☕, and a dash of weekend inspiration
 </div>
