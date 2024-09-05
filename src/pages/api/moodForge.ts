@@ -5,6 +5,10 @@ import { generatePrompt } from '@/utils/promptGeneration';
 import { getRandomEnhancementTag } from '@/utils/enhancementTags';
 import { handleApiError } from '@/utils/errorHandling';
 
+export const config = {
+    maxDuration: 60,
+  };
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
