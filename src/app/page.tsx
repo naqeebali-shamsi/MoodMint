@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import MoodNFT from '@/artifacts/contracts/MoodNFT.sol/MoodNFT.json';
 import Lottie from 'lottie-react';
-import { z } from 'zod';
+import { set, z } from 'zod';
 import { Button, Dropdown } from 'antd';
 import { DownOutlined, ExportOutlined, DislikeOutlined, EyeOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
@@ -32,6 +32,7 @@ export default function Home() {
   const [mintedNFTs, setMintedNFTs] = useState<MintedNFT[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [networkError, setNetworkError] = useState<string | null>(null);
+  const [metaMaskPresent, setMetaMaskPresent] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -56,6 +57,7 @@ export default function Home() {
       if (typeof window !== 'undefined' && window.ethereum) {
         try {
           if (window.ethereum.request) {
+            setMetaMaskPresent(true);
             const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
             if (!isMounted) return;
 
@@ -71,7 +73,7 @@ export default function Home() {
           console.error("An error occurred during initialization:", error);
         }
       } else {
-        console.log("Please install MetaMask!");
+        alert("Please install MetaMask!");
       }
     };
 
@@ -346,6 +348,14 @@ export default function Home() {
           </div>
         )}
       </div>
+      {
+        !metaMaskPresent && (
+          <div className="fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md shadow-lg" role="alert">
+            <strong className="font-bold">MetaMask Required</strong>
+            <span className="block sm:inline"> Please <a href="https://metamask.io/" target="_blank" rel="noopener noreferrer" className="underline">install MetaMask</a> to mint NFTs.</span>
+          </div>
+        )
+      }
       {networkError && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
           <strong className="font-bold">Network Error:</strong>
