@@ -85,7 +85,7 @@ export default function Home() {
 
   useEffect(() => {
     let isMounted = true;
-
+  
     const checkNetwork = async () => {
       if (typeof window !== 'undefined' && window.ethereum) {
         try {
@@ -102,7 +102,7 @@ export default function Home() {
         }
       }
     };
-
+  
     const handleNetworkChange = (networkId: string) => {
       if (networkId !== '0xaa36a7') { // Sepolia networkId in hex
         setNetworkError("Please connect to the Sepolia test network");
@@ -110,16 +110,16 @@ export default function Home() {
         setNetworkError(null);
       }
     };
-
+  
     checkNetwork();
-
-    if (window.ethereum && window.ethereum.on) {
+  
+    if (window.ethereum && typeof window.ethereum.on === 'function') {
       window.ethereum.on('networkChanged', handleNetworkChange);
     }
-
+  
     return () => {
       isMounted = false;
-      if (window.ethereum) {
+      if (window.ethereum && typeof window.ethereum.removeListener === 'function') {
         window.ethereum.removeListener('networkChanged', handleNetworkChange);
       }
     };
